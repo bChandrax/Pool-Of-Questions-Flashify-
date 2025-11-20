@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comp221-Interactive PoQ</title>
+    <title>StudySmart - COMP 221 Software Engineering</title>
     <style>
         * {
             margin: 0;
@@ -40,7 +40,6 @@
             box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
         }
 
-        /* Header */
         .header {
             padding: 50px 20px 30px;
             text-align: center;
@@ -59,7 +58,6 @@
             opacity: 0.9;
         }
 
-        /* Stats Bar */
         .stats-bar {
             display: flex;
             justify-content: space-around;
@@ -84,12 +82,10 @@
             margin-top: 4px;
         }
 
-        /* Main Content */
         .main-content {
             padding: 0 20px;
         }
 
-        /* Study Section */
         .study-section {
             background: white;
             border-radius: 20px;
@@ -134,7 +130,6 @@
             margin-top: 10px;
         }
 
-        /* Progress Section */
         .progress-section {
             margin: 25px 0;
         }
@@ -179,7 +174,6 @@
         .progress-fill.ch8 { background: #84cc16; width: 75%; }
         .progress-fill.ch9 { background: #ec4899; width: 45%; }
 
-        /* Categories Section */
         .category-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -218,7 +212,6 @@
             color: var(--gray);
         }
 
-        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -261,7 +254,6 @@
             height: 80px;
         }
 
-        /* Study Session Styles */
         .study-session {
             display: none;
             position: fixed;
@@ -292,7 +284,6 @@
             margin-bottom: 5px;
         }
 
-        /* Question Type Specific Styles */
         .question-type-indicator {
             background: var(--gray-light);
             padding: 5px 10px;
@@ -304,7 +295,6 @@
             display: inline-block;
         }
 
-        /* Self Assessment Styles */
         .flashcard {
             background: var(--light);
             border-radius: 15px;
@@ -367,7 +357,6 @@
             transform: translateY(-2px);
         }
 
-        /* Multiple Choice Styles */
         .options-grid {
             display: grid;
             gap: 10px;
@@ -440,7 +429,6 @@
             color: var(--gray);
         }
 
-        /* Feedback Message */
         .feedback-message {
             position: fixed;
             top: 50%;
@@ -471,6 +459,114 @@
             80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
             100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
         }
+
+        /* Results View Styles */
+        .results-view {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        .results-header {
+            margin-bottom: 30px;
+        }
+
+        .results-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .results-subtitle {
+            color: var(--gray);
+            font-size: 16px;
+        }
+
+        .results-stats {
+            background: var(--light);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .results-percentage {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .results-percentage.excellent { color: #10b981; }
+        .results-percentage.good { color: #f59e0b; }
+        .results-percentage.poor { color: #ef4444; }
+
+        .results-score {
+            font-size: 18px;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        .results-progress {
+            height: 12px;
+            background: var(--gray-light);
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .results-progress-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        .results-message {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: var(--light);
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .results-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .results-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .results-btn.secondary {
+            background: var(--gray-light);
+            color: var(--dark);
+        }
+
+        .results-btn:hover {
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -479,9 +575,8 @@
         <div id="dashboardView">
             <!-- Header -->
             <div class="header">
-                <h1>Flashify
-            </h1>
-                <p>COMP 221 Software Engineering-PoolOfQuestions</p>
+                <h1>StudySmart</h1>
+                <p>COMP 221 Software Engineering</p>
             </div>
 
             <!-- Stats Bar -->
@@ -504,7 +599,7 @@
             <div class="main-content">
                 <!-- Study Section -->
                 <div class="study-section">
-                    <div class="study-title">Let's Go blackie</div>
+                    <div class="study-title">READY TO STUDY</div>
                     <button class="start-button" onclick="startStudySession()">START STUDY SESSION</button>
                     <div class="card-count" id="sessionCardCount">133 cards ready • 60 minutes</div>
                 </div>
@@ -629,10 +724,38 @@
             <!-- Question Container - Dynamically filled based on type -->
             <div id="questionContainer"></div>
         </div>
+
+        <!-- Results View -->
+        <div id="resultsView" class="results-view">
+            <div class="results-header">
+                <h2 class="results-title">Session Complete! 🎉</h2>
+                <p class="results-subtitle" id="resultsSubtitle">Here's how you did</p>
+            </div>
+
+            <div class="results-stats">
+                <div class="results-percentage" id="resultsPercentage">0%</div>
+                <div class="results-score" id="resultsScore">
+                    <span id="resultsCorrect">0</span> out of <span id="resultsTotal">0</span> correct
+                </div>
+                
+                <div class="results-progress">
+                    <div class="results-progress-fill" id="resultsProgress" style="width: 0%"></div>
+                </div>
+                
+                <div class="results-message" id="resultsMessage">
+                    Keep practicing to improve your score!
+                </div>
+            </div>
+
+            <div class="results-actions">
+                <button class="results-btn secondary" onclick="endStudySession()">Back to Dashboard</button>
+                <button class="results-btn primary" onclick="startStudySession(currentSession.category)">Try Again</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // COMP 221 Software Engineering flashcards - All 133 questions
+        // COMP 221 Software Engineering flashcards - All 133 questions with correct options
         let flashcards = [
             // Chapter 1: Introduction to Software Engineering (15 cards)
             {
@@ -2072,7 +2195,7 @@
             {
                 id: 116,
                 question: "What is Test-Driven Development (TDD)?",
-                answer: "TDD is a software development process where tests are written before the code, ensuring that the code meets its requirements from the beginning.",
+                answer: "TDD is a software development process where tests are written before the actual code to ensure the system meets its requirements from the start.",
                 category: "Chapter 8",
                 type: "self-assessment",
                 state: "daily",
@@ -2306,6 +2429,12 @@
         // Question Type Manager
         class QuestionManager {
             static generateMultipleChoiceOptions(card, allCards) {
+                // For multiple-choice questions, use the predefined options
+                if (card.options && card.options.length > 0) {
+                    return this.shuffleArray([...card.options]);
+                }
+                
+                // For self-assessment cards that need multiple choice, generate options
                 const correctAnswer = card.answer;
                 const wrongAnswers = [];
                 
@@ -2341,6 +2470,7 @@
         function showView(viewId) {
             document.getElementById('dashboardView').style.display = 'none';
             document.getElementById('studySession').style.display = 'none';
+            document.getElementById('resultsView').style.display = 'none';
             document.getElementById(viewId).style.display = 'block';
         }
 
@@ -2373,10 +2503,49 @@
             updateDashboardStats();
         }
 
+        function showResults() {
+            const totalQuestions = currentSession.cards.length;
+            const correctAnswers = currentSession.correct;
+            const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+            
+            document.getElementById('resultsCorrect').textContent = correctAnswers;
+            document.getElementById('resultsTotal').textContent = totalQuestions;
+            document.getElementById('resultsPercentage').textContent = percentage;
+            
+            // Set progress bar width
+            document.getElementById('resultsProgress').style.width = `${percentage}%`;
+            
+            // Set color based on performance
+            const progressFill = document.getElementById('resultsProgress');
+            if (percentage >= 80) {
+                progressFill.style.background = '#10b981'; // Green
+            } else if (percentage >= 60) {
+                progressFill.style.background = '#f59e0b'; // Orange
+            } else {
+                progressFill.style.background = '#ef4444'; // Red
+            }
+            
+            // Set message based on performance
+            const messageElement = document.getElementById('resultsMessage');
+            if (percentage >= 90) {
+                messageElement.textContent = "Outstanding! You've mastered this material! 🎉";
+            } else if (percentage >= 80) {
+                messageElement.textContent = "Great job! You have a solid understanding! 👍";
+            } else if (percentage >= 70) {
+                messageElement.textContent = "Good work! Keep practicing to improve! 💪";
+            } else if (percentage >= 60) {
+                messageElement.textContent = "Not bad! Review the material and try again! 📚";
+            } else {
+                messageElement.textContent = "Keep studying! You'll get better with practice! 🎯";
+            }
+            
+            showView('resultsView');
+        }
+
         // Card Rendering based on Type
         function renderCurrentCard() {
             if (currentSession.currentIndex >= currentSession.cards.length) {
-                endStudySession();
+                showResults();
                 return;
             }
 
@@ -2552,6 +2721,4 @@
         updateDashboardStats();
     </script>
 </body>
-
 </html>
-
