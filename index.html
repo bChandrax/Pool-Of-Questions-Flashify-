@@ -173,6 +173,7 @@
         .progress-fill.ch7 { background: #f97316; width: 55%; }
         .progress-fill.ch8 { background: #84cc16; width: 75%; }
         .progress-fill.ch9 { background: #ec4899; width: 45%; }
+        .progress-fill.ch10 { background: #14b8a6; width: 85%; }
 
         .category-grid {
             display: grid;
@@ -675,6 +676,11 @@
                             <div class="category-icon">9️⃣</div>
                             <div class="category-name">Chapter 9</div>
                             <div class="category-count">13 cards</div>
+                        </div>
+                        <div class="category-card" onclick="startCategorySession('All Multiple Choice')">
+                            <div class="category-icon">🔘</div>
+                            <div class="category-name">All Multiple Choice</div>
+                            <div class="category-count">46 cards</div>
                         </div>
                     </div>
                 </div>
@@ -2476,13 +2482,17 @@
 
         // Study Session Management
         function startStudySession(category = null) {
-            currentSession = {
-                cards: category ? flashcards.filter(card => card.category === category) : [...flashcards],
-                currentIndex: 0,
-                correct: 0,
-                incorrect: 0,
-                category: category
-            };
+            // Handle the "All Multiple Choice" category
+            if (category === "All Multiple Choice") {
+                currentSession.cards = flashcards.filter(card => card.type === "multiple-choice");
+            } else {
+                currentSession.cards = category ? flashcards.filter(card => card.category === category) : [...flashcards];
+            }
+
+            currentSession.currentIndex = 0;
+            currentSession.correct = 0;
+            currentSession.incorrect = 0;
+            currentSession.category = category;
 
             // Shuffle cards for variety
             currentSession.cards = QuestionManager.shuffleArray(currentSession.cards);
@@ -2722,5 +2732,3 @@
     </script>
 </body>
 </html>
-
-
