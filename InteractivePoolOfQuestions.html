@@ -1,0 +1,2554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comp221-Interactive PoQ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a6fd8;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .app-container {
+            max-width: 400px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header */
+        .header {
+            padding: 50px 20px 30px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 20px;
+            background: white;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 0 20px;
+        }
+
+        /* Study Section */
+        .study-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .study-title {
+            font-size: 14px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 15px;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .card-count {
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            margin: 25px 0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .progress-item {
+            margin-bottom: 15px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--gray-light);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-fill.ch1 { background: #10b981; width: 80%; }
+        .progress-fill.ch2 { background: #f59e0b; width: 60%; }
+        .progress-fill.ch3 { background: #ef4444; width: 40%; }
+        .progress-fill.ch4 { background: #667eea; width: 70%; }
+        .progress-fill.ch5 { background: #8b5cf6; width: 50%; }
+        .progress-fill.ch6 { background: #06b6d4; width: 65%; }
+        .progress-fill.ch7 { background: #f97316; width: 55%; }
+        .progress-fill.ch8 { background: #84cc16; width: 75%; }
+        .progress-fill.ch9 { background: #ec4899; width: 45%; }
+
+        /* Categories Section */
+        .category-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .category-card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .category-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .category-name {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .category-count {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-top: 1px solid var(--gray-light);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gray);
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .content-spacer {
+            height: 80px;
+        }
+
+        /* Study Session Styles */
+        .study-session {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .session-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        /* Question Type Specific Styles */
+        .question-type-indicator {
+            background: var(--gray-light);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray);
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        /* Self Assessment Styles */
+        .flashcard {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 30px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 18px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--gray-light);
+            position: relative;
+        }
+
+        .flashcard:hover {
+            border-color: var(--primary);
+        }
+
+        .flashcard.flipped {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .card-front, .card-back {
+            width: 100%;
+        }
+
+        .assessment-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .assessment-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-wrong {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-correct {
+            background: var(--success);
+            color: white;
+        }
+
+        .assessment-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Multiple Choice Styles */
+        .options-grid {
+            display: grid;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: var(--light);
+        }
+
+        .option.correct {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .option.incorrect {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        .session-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .control-btn.secondary {
+            background: var(--gray-light);
+            color: var(--dark);
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .close-session {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        /* Feedback Message */
+        .feedback-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-weight: bold;
+            z-index: 2000;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: fadeInOut 2s ease-in-out;
+        }
+
+        .feedback-correct {
+            background: var(--success);
+            color: white;
+        }
+
+        .feedback-wrong {
+            background: var(--danger);
+            color: white;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Dashboard View -->
+        <div id="dashboardView">
+            <!-- Header -->
+            <div class="header">
+                <h1>Flashify by Karabo Machanja</h1>
+                <p>COMP 221 Software Engineering-PoolOfQuestions</p>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-number" id="dueCount">133</div>
+                    <div class="stat-label">Total Questions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="streakCount">7</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="masteredCount">0</div>
+                    <div class="stat-label">Mastered</div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Study Section -->
+                <div class="study-section">
+                    <div class="study-title">Let's Go blackie</div>
+                    <button class="start-button" onclick="startStudySession()">START STUDY SESSION</button>
+                    <div class="card-count" id="sessionCardCount">133 cards ready • 60 minutes</div>
+                </div>
+
+                <!-- Progress Section -->
+                <div class="progress-section">
+                    <h2 class="section-title">Question Types</h2>
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span>Self Assessment</span>
+                            <span>87 cards</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill ch1" style="width: 65%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span>Multiple Choice</span>
+                            <span>46 cards</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill ch2" style="width: 35%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories Section -->
+                <div class="categories-section">
+                    <h2 class="section-title">Study by Chapter</h2>
+                    <div class="category-grid">
+                        <div class="category-card" onclick="startCategorySession('Chapter 1')">
+                            <div class="category-icon">1️⃣</div>
+                            <div class="category-name">Chapter 1</div>
+                            <div class="category-count">15 cards</div>
+                        </div>
+                        <div class="category-card" onclick="startCategorySession('Chapter 2')">
+                            <div class="category-icon">2️⃣</div>
+                            <div class="category-name">Chapter 2</div>
+                            <div class="category-count">15 cards</div>
+                        </div>
+                        <div class="category-card" onclick="startCategorySession('Chapter 3')">
+                            <div class="category-icon">3️⃣</div>
+                            <div class="category-name">Chapter 3</div>
+                            <div class="category-count">15 cards</div>
+                        </div>
+                        <div class="category-card" onclick="startCategorySession('Chapter 4')">
+                            <div class="category-icon">4️⃣</div>
+                            <div class="category-name">Chapter 4</div>
+                            <div class="category-count">15 cards</div>
+                        </div>
+                        <div class="category-card" onclick="startCategorySession('Chapter 5')">
+                            <div class="category-icon">5️⃣</div>
+                            <div class="category-name">Chapter 5</div>
+                            <div class="category-count">15 cards</div>
+                        </div>
+                        <div class="category-card" onclick="startCategorySession('Chapter 6')">
+                            <div class="category-icon">6️⃣</div>
+                            <div class="category-name">Chapter 6</div>
+                            <div class="category-count">15 cards</div>
+                        </div>
+                        <div class="category-card" onclick="startCategorySession('Chapter 7')">
+                            <div class="category-icon">7️⃣</div>
+                            <div class="category-name">Chapter 7</div>
+                            <div class="category-count">15 cards</div>
+                        </div>
+                        <div class="category-card" onclick="startCategorySession('Chapter 8')">
+                            <div class="category-icon">8️⃣</div>
+                            <div class="category-name">Chapter 8</div>
+                            <div class="category-count">15 cards</div>
+                        </div>
+                        <div class="category-card" onclick="startCategorySession('Chapter 9')">
+                            <div class="category-icon">9️⃣</div>
+                            <div class="category-name">Chapter 9</div>
+                            <div class="category-count">13 cards</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spacer for bottom navigation -->
+                <div class="content-spacer"></div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <div class="nav-item">
+                    <div class="nav-icon">🏆</div>
+                    <div class="nav-label">Challenges</div>
+                </div>
+                <div class="nav-item active">
+                    <div class="nav-icon">🎯</div>
+                    <div class="nav-label">Study</div>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">👤</div>
+                    <div class="nav-label">Profile</div>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">👥</div>
+                    <div class="nav-label">Friends</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Study Session View -->
+        <div id="studySession" class="study-session">
+            <div class="session-header">
+                <h2 id="sessionTitle">Study Session</h2>
+                <button class="close-session" onclick="endStudySession()">✕</button>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-text">
+                    <span>Progress</span>
+                    <span id="progressText">1/133</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill ch1" id="sessionProgress" style="width: 0.75%;"></div>
+                </div>
+            </div>
+
+            <!-- Question Container - Dynamically filled based on type -->
+            <div id="questionContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // COMP 221 Software Engineering flashcards - All 133 questions
+        let flashcards = [
+            // Chapter 1: Introduction to Software Engineering (15 cards)
+            {
+                id: 1,
+                question: "Which of the following is a key principle of software engineering?",
+                answer: "Produce high-quality, reliable software",
+                category: "Chapter 1",
+                type: "multiple-choice",
+                options: ["Deliver quickly at any cost", "Produce high-quality, reliable software", "Ignore user needs", "Minimize software updates"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 2,
+                question: "What distinguishes professional software from personal software?",
+                answer: "Professional software is intended for use by others and is maintained",
+                category: "Chapter 1",
+                type: "multiple-choice",
+                options: ["Professional software is more expensive", "Professional software is intended for use by others and is maintained", "Personal software is developed by teams", "Personal software is more secure"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 3,
+                question: "Which of the following is not a key attribute of a good software system?",
+                answer: "Speed of development",
+                category: "Chapter 1",
+                type: "multiple-choice",
+                options: ["Usability", "Reliability", "Speed of development", "Maintainability"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 4,
+                question: "Which of the following describes software engineering?",
+                answer: "An engineering discipline concerned with all aspects of software production",
+                category: "Chapter 1",
+                type: "multiple-choice",
+                options: ["A scientific discipline", "An engineering discipline concerned with all aspects of software production", "A programming method", "A software testing method"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 5,
+                question: "What is the term for ensuring software meets the needs of users?",
+                answer: "Validation",
+                category: "Chapter 1",
+                type: "multiple-choice",
+                options: ["Validation", "Verification", "Implementation", "Coding"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 6,
+                question: "What is software engineering?",
+                answer: "Software engineering is an engineering discipline concerned with all aspects of software production, including design, development, testing, and maintenance.",
+                category: "Chapter 1",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 7,
+                question: "What distinguishes professional software from personal software?",
+                answer: "Professional software is developed for business purposes and is usually maintained and updated by teams, whereas personal software is created for individual use.",
+                category: "Chapter 1",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 8,
+                question: "What are the attributes of good software?",
+                answer: "Good software should be maintainable, dependable, usable, and deliver the required functionality and performance.",
+                category: "Chapter 1",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 9,
+                question: "What are the main phases of the software engineering process?",
+                answer: "The phases include specification, development, validation, and evolution.",
+                category: "Chapter 1",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 10,
+                question: "What is the main goal of software engineering?",
+                answer: "The goal is to develop reliable and maintainable software systems that meet user requirements within a given budget and time frame.",
+                category: "Chapter 1",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 11,
+                question: "Define software process.",
+                answer: "A software process is a set of related activities that lead to the production of a software product.",
+                category: "Chapter 1",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 12,
+                question: "Explain the difference between system engineering and software engineering.",
+                answer: "System engineering is concerned with the development of all aspects of computer-based systems, while software engineering focuses on the software development aspect only.",
+                category: "Chapter 1",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 13,
+                question: "What is software evolution?",
+                answer: "Software evolution refers to the process of updating software after it has been delivered to correct faults, improve performance, or adapt to a changed environment.",
+                category: "Chapter 1",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 14,
+                question: "Why are ethical issues important in software engineering?",
+                answer: "Ethical issues impact the public, society, and individuals who use the software. Software engineers must ensure their work is safe, secure, and trustworthy.",
+                category: "Chapter 1",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 15,
+                question: "What is the difference between verification and validation?",
+                answer: "Verification ensures the system is built correctly according to specifications, while validation ensures the system meets the user's needs.",
+                category: "Chapter 1",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+
+            // Chapter 2: Software Processes (15 cards)
+            {
+                id: 16,
+                question: "Which software development model follows a linear and sequential approach?",
+                answer: "Waterfall Model",
+                category: "Chapter 2",
+                type: "multiple-choice",
+                options: ["Agile Model", "Spiral Model", "Waterfall Model", "V-Model"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 17,
+                question: "Which process model emphasizes risk management at every stage?",
+                answer: "Spiral Model",
+                category: "Chapter 2",
+                type: "multiple-choice",
+                options: ["Waterfall Model", "Incremental Model", "Spiral Model", "Prototyping Model"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 18,
+                question: "Which of the following is not a core software engineering activity?",
+                answer: "Software advertising",
+                category: "Chapter 2",
+                type: "multiple-choice",
+                options: ["Software specification", "Software validation", "Software development", "Software advertising"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 19,
+                question: "In which model are software components developed and integrated incrementally?",
+                answer: "Incremental Model",
+                category: "Chapter 2",
+                type: "multiple-choice",
+                options: ["Waterfall Model", "Incremental Model", "Agile Model", "Spiral Model"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 20,
+                question: "Which activity is involved in software maintenance?",
+                answer: "Adding new features to a deployed system",
+                category: "Chapter 2",
+                type: "multiple-choice",
+                options: ["Testing", "Adding new features to a deployed system", "Requirements gathering", "Project planning"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 21,
+                question: "What is the Waterfall model in software engineering?",
+                answer: "The Waterfall model is a sequential development process in which progress flows through phases like requirements, design, implementation, testing, and maintenance.",
+                category: "Chapter 2",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 22,
+                question: "What is the main drawback of the Waterfall model?",
+                answer: "It is difficult to go back to previous phases, which makes it unsuitable for projects where requirements change frequently.",
+                category: "Chapter 2",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 23,
+                question: "Describe the Spiral model.",
+                answer: "The Spiral model combines iterative development with systematic aspects of the Waterfall model and includes risk analysis at every iteration.",
+                category: "Chapter 2",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 24,
+                question: "What is an incremental development process?",
+                answer: "It is a process where the software is developed and delivered in small increments, allowing for partial system functionality early in the process.",
+                category: "Chapter 2",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 25,
+                question: "What are the key activities in any software process model?",
+                answer: "The key activities include specification, design, implementation, testing, and maintenance.",
+                category: "Chapter 2",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 26,
+                question: "How does the V-Model improve upon the Waterfall model?",
+                answer: "The V-Model emphasizes the relationship between each development phase and its corresponding testing phase, ensuring verification at each stage.",
+                category: "Chapter 2",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 27,
+                question: "What is rapid application development (RAD)?",
+                answer: "RAD is a type of incremental software development process that emphasizes quick development and iteration of prototypes.",
+                category: "Chapter 2",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 28,
+                question: "What is software prototyping?",
+                answer: "Software prototyping involves building a preliminary version of a system to help developers understand the system's requirements and design.",
+                category: "Chapter 2",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 29,
+                question: "Why is risk management important in software engineering?",
+                answer: "Risk management helps identify potential risks early in the process, allowing for strategies to mitigate those risks and avoid project failures.",
+                category: "Chapter 2",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 30,
+                question: "What is the difference between process and product in software development?",
+                answer: "The process refers to the activities involved in software development, while the product is the actual software that results from the process.",
+                category: "Chapter 2",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+
+            // Chapter 3: Agile Software Development (15 cards)
+            {
+                id: 31,
+                question: "Which agile framework uses sprints to structure development?",
+                answer: "Scrum",
+                category: "Chapter 3",
+                type: "multiple-choice",
+                options: ["Waterfall", "Scrum", "XP (Extreme Programming)", "RAD"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 32,
+                question: "Which of the following is not a key principle of Agile development?",
+                answer: "Comprehensive documentation is required",
+                category: "Chapter 3",
+                type: "multiple-choice",
+                options: ["Working software is the primary measure of progress", "Comprehensive documentation is required", "Customer collaboration is prioritized", "Responding to change over following a plan"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 33,
+                question: "Agile development focuses on:",
+                answer: "Flexibility, collaboration, and iterative development",
+                category: "Chapter 3",
+                type: "multiple-choice",
+                options: ["Extensive planning and strict deadlines", "Flexibility, collaboration, and iterative development", "Minimal testing", "A single release at the end"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 34,
+                question: "What is the time-boxed iteration called in Scrum?",
+                answer: "Sprint",
+                category: "Chapter 3",
+                type: "multiple-choice",
+                options: ["Milestone", "Phase", "Sprint", "Version"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 35,
+                question: "Which of the following best describes test-driven development (TDD)?",
+                answer: "Writing test cases before coding starts",
+                category: "Chapter 3",
+                type: "multiple-choice",
+                options: ["Writing test cases after coding is complete", "Writing test cases before coding starts", "Skipping testing entirely", "Relying on manual testing"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 36,
+                question: "What is Agile software development?",
+                answer: "Agile development is an iterative approach that emphasizes flexibility, collaboration, and customer involvement in the software development process.",
+                category: "Chapter 3",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 37,
+                question: "Name one Agile methodology.",
+                answer: "Scrum is one of the popular Agile methodologies.",
+                category: "Chapter 3",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 38,
+                question: "What is a sprint in Agile development?",
+                answer: "A sprint is a time-boxed iteration during which a set amount of work is completed and made ready for review.",
+                category: "Chapter 3",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 39,
+                question: "What are user stories in Agile?",
+                answer: "User stories are simple descriptions of a feature told from the perspective of the user or customer, used to define system functionality.",
+                category: "Chapter 3",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 40,
+                question: "What is the main difference between Agile and traditional software development models?",
+                answer: "Agile focuses on iterative development and flexibility, while traditional models, like Waterfall, are more rigid and sequential.",
+                category: "Chapter 3",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 41,
+                question: "What is pair programming?",
+                answer: "Pair programming is an Agile development practice where two programmers work together at one workstation, with one writing the code and the other reviewing it in real-time.",
+                category: "Chapter 3",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 42,
+                question: "What are the principles of the Agile Manifesto?",
+                answer: "The principles include customer collaboration, responding to change, delivering working software frequently, and valuing individuals and interactions over processes and tools.",
+                category: "Chapter 3",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 43,
+                question: "What is Test-Driven Development (TDD)?",
+                answer: "TDD is a software development approach where test cases are written before the actual code to ensure the system meets its requirements from the start.",
+                category: "Chapter 3",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 44,
+                question: "What is the role of the product owner in Scrum?",
+                answer: "The product owner is responsible for defining the product backlog, setting priorities, and ensuring the development team delivers value to the business.",
+                category: "Chapter 3",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 45,
+                question: "What is the difference between Scrum and Kanban?",
+                answer: "Scrum focuses on fixed-length sprints and requires specific roles (like Scrum Master, Product Owner), while Kanban is more flexible, with continuous work flow and no set time frames.",
+                category: "Chapter 3",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+
+            // Chapter 4: Requirements Engineering (15 cards)
+            {
+                id: 46,
+                question: "Functional requirements describe:",
+                answer: "The system's behavior and operations",
+                category: "Chapter 4",
+                type: "multiple-choice",
+                options: ["The system's behavior and operations", "System performance", "System security", "User interfaces"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 47,
+                question: "What is requirements elicitation?",
+                answer: "Gathering information about what the system should do",
+                category: "Chapter 4",
+                type: "multiple-choice",
+                options: ["Defining system architecture", "Gathering information about what the system should do", "Designing the user interface", "Testing software modules"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 48,
+                question: "Which of the following is a non-functional requirement?",
+                answer: "System shall handle 1000 transactions per second",
+                category: "Chapter 4",
+                type: "multiple-choice",
+                options: ["User authentication", "System shall handle 1000 transactions per second", "Payment gateway integration", "Search feature"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 49,
+                question: "Which phase checks whether the system requirements meet user needs?",
+                answer: "Requirements validation",
+                category: "Chapter 4",
+                type: "multiple-choice",
+                options: ["Requirements gathering", "Requirements specification", "Requirements validation", "Requirements testing"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 50,
+                question: "What is a software requirement document (SRS)?",
+                answer: "A document specifying the functions and constraints of a system",
+                category: "Chapter 4",
+                type: "multiple-choice",
+                options: ["A coding guideline document", "A document specifying the functions and constraints of a system", "A project management document", "A user manual"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 51,
+                question: "What are functional requirements?",
+                answer: "Functional requirements define the behavior of a system, such as specific inputs, outputs, and interactions.",
+                category: "Chapter 4",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 52,
+                question: "What are non-functional requirements?",
+                answer: "Non-functional requirements define the quality attributes of a system, like performance, usability, reliability, and security.",
+                category: "Chapter 4",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 53,
+                question: "What is requirements elicitation?",
+                answer: "Requirements elicitation is the process of gathering requirements from stakeholders through interviews, workshops, and documentation reviews.",
+                category: "Chapter 4",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 54,
+                question: "What is requirements validation?",
+                answer: "Requirements validation ensures that the defined requirements meet user needs and that there are no inconsistencies or ambiguities.",
+                category: "Chapter 4",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 55,
+                question: "What is the role of use cases in requirements engineering?",
+                answer: "Use cases describe the interactions between a user (or actor) and the system, helping to clarify functional requirements.",
+                category: "Chapter 4",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 56,
+                question: "Why is managing requirements important?",
+                answer: "Managing requirements helps ensure changes to the system are controlled and that the requirements are aligned with business goals throughout the project lifecycle.",
+                category: "Chapter 4",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 57,
+                question: "What is a software requirements specification (SRS)?",
+                answer: "The SRS is a document that captures all the system's requirements, including both functional and non-functional requirements.",
+                category: "Chapter 4",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 58,
+                question: "Explain the term 'scope creep.'",
+                answer: "Scope creep refers to uncontrolled changes or continuous growth in a project's scope after it has started, often leading to project delays or cost overruns.",
+                category: "Chapter 4",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 59,
+                question: "What is requirements traceability?",
+                answer: "Requirements traceability is the ability to link requirements throughout the project life cycle, ensuring that each requirement is fulfilled and tested.",
+                category: "Chapter 4",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 60,
+                question: "What is the difference between a stakeholder and a user?",
+                answer: "A stakeholder is anyone with an interest in the system, while a user is someone who directly interacts with or uses the system.",
+                category: "Chapter 4",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+
+            // Chapter 5: System Modeling (15 cards)
+            {
+                id: 61,
+                question: "Which UML diagram represents static structure of a system?",
+                answer: "Class diagram",
+                category: "Chapter 5",
+                type: "multiple-choice",
+                options: ["Use case diagram", "Sequence diagram", "Class diagram", "Activity diagram"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 62,
+                question: "Which UML diagram shows the interactions between objects in time order?",
+                answer: "Sequence diagram",
+                category: "Chapter 5",
+                type: "multiple-choice",
+                options: ["Class diagram", "Use case diagram", "Sequence diagram", "Component diagram"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 63,
+                question: "What do behavioral models in system modeling represent?",
+                answer: "System behavior over time",
+                category: "Chapter 5",
+                type: "multiple-choice",
+                options: ["System boundaries", "System structure", "System behavior over time", "System hardware"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 64,
+                question: "What do context models show in system modeling?",
+                answer: "The boundaries of a system and its environment interactions",
+                category: "Chapter 5",
+                type: "multiple-choice",
+                options: ["Internal structure of the system", "The boundaries of a system and its environment interactions", "Data flow within the system", "User interactions"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 65,
+                question: "Which of the following diagrams in UML represents workflows or activities?",
+                answer: "Activity diagram",
+                category: "Chapter 5",
+                type: "multiple-choice",
+                options: ["Class diagram", "Activity diagram", "Sequence diagram", "Deployment diagram"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 66,
+                question: "What is a context model in system modeling?",
+                answer: "A context model defines the boundaries of a system and its interactions with external systems or actors.",
+                category: "Chapter 5",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 67,
+                question: "Which UML diagram shows interactions between objects over time?",
+                answer: "Sequence diagram.",
+                category: "Chapter 5",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 68,
+                question: "What is the difference between a structural model and a behavioral model?",
+                answer: "Structural models represent the static organization of the system (e.g., class diagrams), while behavioral models represent dynamic behavior (e.g., state and sequence diagrams).",
+                category: "Chapter 5",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 69,
+                question: "What does a use case diagram represent in system modeling?",
+                answer: "It shows the interactions between users (or actors) and the system to capture functional requirements.",
+                category: "Chapter 5",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 70,
+                question: "Why is model-driven engineering useful in system modeling?",
+                answer: "Model-driven engineering allows systems to be represented at a high level of abstraction, and automated tools can generate code from models, improving efficiency and reducing errors.",
+                category: "Chapter 5",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 71,
+                question: "What is an interaction model?",
+                answer: "An interaction model defines how system components or objects communicate with each other, often represented using sequence or communication diagrams.",
+                category: "Chapter 5",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 72,
+                question: "Define a class diagram.",
+                answer: "A class diagram shows the structure of a system by depicting its classes, attributes, methods, and the relationships between the classes.",
+                category: "Chapter 5",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 73,
+                question: "What is a state diagram used for in system modeling?",
+                answer: "A state diagram shows how an object transitions between different states in response to events.",
+                category: "Chapter 5",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 74,
+                question: "What are the main components of a use case?",
+                answer: "Actor, system boundary, and interactions or relationships between actors and the system.",
+                category: "Chapter 5",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 75,
+                question: "What is the benefit of using UML in system modeling?",
+                answer: "UML provides a standard, visual way to document and model system structure and behavior, improving communication among stakeholders and helping to identify issues early.",
+                category: "Chapter 5",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+
+            // Chapter 6: Architectural Design (15 cards)
+            {
+                id: 76,
+                question: "Which of the following is a benefit of using a layered architecture?",
+                answer: "Promotes separation of concerns",
+                category: "Chapter 6",
+                type: "multiple-choice",
+                options: ["Minimizes documentation", "Promotes separation of concerns", "Reduces software size", "Increases coupling"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 77,
+                question: "In a client-server architecture, what does the server provide?",
+                answer: "Data processing",
+                category: "Chapter 6",
+                type: "multiple-choice",
+                options: ["Data processing", "User interfaces", "Requests to the client", "Network infrastructure"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 78,
+                question: "Which of the following is not an architectural pattern?",
+                answer: "Waterfall architecture",
+                category: "Chapter 6",
+                type: "multiple-choice",
+                options: ["Microservices", "Layered architecture", "Pipeline architecture", "Waterfall architecture"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 79,
+                question: "Which architecture is suitable for systems that require scalability and flexibility?",
+                answer: "Microservices architecture",
+                category: "Chapter 6",
+                type: "multiple-choice",
+                options: ["Client-server architecture", "Monolithic architecture", "Microservices architecture", "Batch processing architecture"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 80,
+                question: "Which of the following is an example of a distributed system architecture?",
+                answer: "Client-server architecture",
+                category: "Chapter 6",
+                type: "multiple-choice",
+                options: ["Layered architecture", "Client-server architecture", "Object-oriented architecture", "Pipeline architecture"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 81,
+                question: "What is the purpose of architectural design in software engineering?",
+                answer: "Architectural design defines the high-level structure of the system, including components, their relationships, and how they interact to meet system requirements.",
+                category: "Chapter 6",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 82,
+                question: "What is a layered architecture pattern?",
+                answer: "A layered architecture organizes the system into layers, with each layer providing services to the layer above it and using services from the layer below it.",
+                category: "Chapter 6",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 83,
+                question: "Which architectural pattern is commonly used for client-server systems?",
+                answer: "Client-server architecture.",
+                category: "Chapter 6",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 84,
+                question: "Define the concept of 'architectural views.'",
+                answer: "Architectural views are different perspectives of the system's architecture, focusing on specific concerns like functionality, data flow, or physical distribution.",
+                category: "Chapter 6",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 85,
+                question: "What is a repository architecture?",
+                answer: "A repository architecture involves a central data store (repository) that different components access to share information.",
+                category: "Chapter 6",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 86,
+                question: "Explain the concept of architectural design decisions.",
+                answer: "Architectural design decisions refer to choices made about the overall system structure and the key components, including the selection of architectural patterns, protocols, and technologies.",
+                category: "Chapter 6",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 87,
+                question: "What is an MVC (Model-View-Controller) architecture?",
+                answer: "MVC is an architectural pattern that separates an application into three components: the model (data), the view (user interface), and the controller (business logic).",
+                category: "Chapter 6",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 88,
+                question: "What is the importance of performance and security in architectural design?",
+                answer: "Performance ensures that the system can meet operational demands efficiently, while security protects the system and its data from unauthorized access and vulnerabilities.",
+                category: "Chapter 6",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 89,
+                question: "What is the role of the system architect?",
+                answer: "The system architect is responsible for designing the system's structure, ensuring that it meets functional and non-functional requirements, and balancing trade-offs between performance, security, and maintainability.",
+                category: "Chapter 6",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 90,
+                question: "What is a microservices architecture?",
+                answer: "Microservices architecture organizes a system as a collection of small, independent services that communicate through APIs, enabling better scalability and flexibility.",
+                category: "Chapter 6",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+
+            // Chapter 7: Design and Implementation (15 cards)
+            {
+                id: 91,
+                question: "Which of the following is not a design pattern?",
+                answer: "Object pooling",
+                category: "Chapter 7",
+                type: "multiple-choice",
+                options: ["Singleton", "Observer", "Factory", "Object pooling"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 92,
+                question: "Which approach is commonly used in object-oriented design?",
+                answer: "Class and object identification",
+                category: "Chapter 7",
+                type: "multiple-choice",
+                options: ["Functional decomposition", "Class and object identification", "Structured programming", "Bottom-up development"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 93,
+                question: "What is the primary focus of object-oriented design?",
+                answer: "Defining objects and their interactions",
+                category: "Chapter 7",
+                type: "multiple-choice",
+                options: ["Code optimization", "System security", "Defining objects and their interactions", "Minimizing system performance"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 94,
+                question: "What is the purpose of design patterns?",
+                answer: "To provide reusable solutions for common design problems",
+                category: "Chapter 7",
+                type: "multiple-choice",
+                options: ["To provide reusable solutions for common design problems", "To reduce testing efforts", "To improve code security", "To create new algorithms"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 95,
+                question: "Which of the following is an important concept in object-oriented design?",
+                answer: "Encapsulation",
+                category: "Chapter 7",
+                type: "multiple-choice",
+                options: ["Encapsulation", "Iteration", "Database normalization", "Test automation"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 96,
+                question: "What is object-oriented design?",
+                answer: "Object-oriented design focuses on identifying the objects and classes in a system, their attributes, operations, and relationships, and organizing the system around these objects.",
+                category: "Chapter 7",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 97,
+                question: "What is the purpose of design patterns?",
+                answer: "Design patterns provide reusable solutions to common design problems, improving the efficiency and quality of software design.",
+                category: "Chapter 7",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 98,
+                question: "Explain the Singleton design pattern.",
+                answer: "The Singleton pattern ensures that a class has only one instance and provides a global point of access to that instance.",
+                category: "Chapter 7",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 99,
+                question: "What is open-source development?",
+                answer: "Open-source development involves creating software whose source code is publicly available, allowing anyone to use, modify, and distribute it.",
+                category: "Chapter 7",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 100,
+                question: "What is refactoring in software development?",
+                answer: "Refactoring is the process of restructuring existing code without changing its external behavior to improve its readability, maintainability, or performance.",
+                category: "Chapter 7",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 101,
+                question: "What is configuration management?",
+                answer: "Configuration management is the process of systematically handling changes to software code, ensuring that changes are tracked, controlled, and deployed efficiently.",
+                category: "Chapter 7",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 102,
+                question: "Why are interfaces important in component-based development?",
+                answer: "Interfaces define how different software components interact with each other, promoting modularity and reusability.",
+                category: "Chapter 7",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 103,
+                question: "What is host-target development?",
+                answer: "Host-target development is a software development approach where software is developed on one machine (the host) and executed on another (the target).",
+                category: "Chapter 7",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 104,
+                question: "What is the Factory design pattern?",
+                answer: "The Factory pattern provides an interface for creating objects but allows subclasses to alter the type of objects that will be created.",
+                category: "Chapter 7",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 105,
+                question: "What are the benefits of using design patterns?",
+                answer: "Design patterns standardize solutions, improve software structure, promote reuse, and make it easier to communicate design ideas among developers.",
+                category: "Chapter 7",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+
+            // Chapter 8: Software Testing (15 cards)
+            {
+                id: 106,
+                question: "Which type of testing focuses on individual components of a software system?",
+                answer: "Unit testing",
+                category: "Chapter 8",
+                type: "multiple-choice",
+                options: ["Unit testing", "Integration testing", "System testing", "Acceptance testing"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 107,
+                question: "Which of the following testing methods checks the internal code structure?",
+                answer: "White-box testing",
+                category: "Chapter 8",
+                type: "multiple-choice",
+                options: ["Black-box testing", "White-box testing", "Performance testing", "Usability testing"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 108,
+                question: "What is regression testing?",
+                answer: "Testing after updates to ensure existing functionality works",
+                category: "Chapter 8",
+                type: "multiple-choice",
+                options: ["Testing the user interface", "Testing after updates to ensure existing functionality works", "Testing system performance under load", "Initial testing of new features"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 109,
+                question: "Which testing phase involves checking if the system meets the requirements of the end-user?",
+                answer: "Acceptance testing",
+                category: "Chapter 8",
+                type: "multiple-choice",
+                options: ["Unit testing", "Acceptance testing", "Integration testing", "Regression testing"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 110,
+                question: "What is the primary purpose of integration testing?",
+                answer: "To test interactions between combined components",
+                category: "Chapter 8",
+                type: "multiple-choice",
+                options: ["To test individual units of code", "To test the system's performance under load", "To test interactions between combined components", "To test system usability"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 111,
+                question: "What is unit testing?",
+                answer: "Unit testing involves testing individual components or functions of the software to ensure they work as expected.",
+                category: "Chapter 8",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 112,
+                question: "What is the difference between black-box and white-box testing?",
+                answer: "Black-box testing focuses on testing the functionality of the system without knowing its internal structure, while white-box testing examines the internal code and logic.",
+                category: "Chapter 8",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 113,
+                question: "What is regression testing?",
+                answer: "Regression testing checks that recent changes or updates to the software do not negatively affect its existing functionality.",
+                category: "Chapter 8",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 114,
+                question: "What is release testing?",
+                answer: "Release testing is conducted to ensure that the entire system is ready for deployment and meets its specified requirements.",
+                category: "Chapter 8",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 115,
+                question: "What is stress testing?",
+                answer: "Stress testing evaluates the system's performance under extreme conditions, such as high load or limited resources, to ensure it remains functional.",
+                category: "Chapter 8",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 116,
+                question: "What is Test-Driven Development (TDD)?",
+                answer: "TDD is a software development process where tests are written before the code, ensuring that the code meets its requirements from the beginning.",
+                category: "Chapter 8",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 117,
+                question: "Why is automated testing beneficial?",
+                answer: "Automated testing improves efficiency, reduces human error, and allows tests to be run repeatedly during development and maintenance phases.",
+                category: "Chapter 8",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 118,
+                question: "What is the difference between verification and validation in testing?",
+                answer: "Verification ensures that the software is built according to its specifications, while validation ensures that it meets the user's actual needs.",
+                category: "Chapter 8",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 119,
+                question: "What is acceptance testing?",
+                answer: "Acceptance testing is performed to determine whether the system meets the user's requirements and is ready for deployment.",
+                category: "Chapter 8",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 120,
+                question: "What are test partitions in software testing?",
+                answer: "Test partitions are subsets of test cases grouped by similar characteristics to improve test coverage and focus testing efforts on key areas.",
+                category: "Chapter 8",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+
+            // Chapter 9: Software Evolution (13 cards)
+            {
+                id: 121,
+                question: "Which of the following is not a type of software maintenance?",
+                answer: "Directive maintenance",
+                category: "Chapter 9",
+                type: "multiple-choice",
+                options: ["Corrective maintenance", "Perfective maintenance", "Preventive maintenance", "Directive maintenance"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 122,
+                question: "What is the purpose of software reengineering?",
+                answer: "To improve the system's maintainability and performance without changing its functionality",
+                category: "Chapter 9",
+                type: "multiple-choice",
+                options: ["To completely rewrite the software from scratch", "To improve the system's maintainability and performance without changing its functionality", "To merge multiple software systems", "To fix minor bugs in the code"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 123,
+                question: "What is a legacy system?",
+                answer: "An outdated system that is still in use",
+                category: "Chapter 9",
+                type: "multiple-choice",
+                options: ["A system that has recently been developed", "An outdated system that is still in use", "A system used only for training purposes", "A system developed using the latest technology"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 124,
+                question: "Which type of maintenance focuses on making a system adaptable to new environments?",
+                answer: "Adaptive maintenance",
+                category: "Chapter 9",
+                type: "multiple-choice",
+                options: ["Corrective maintenance", "Adaptive maintenance", "Perfective maintenance", "Preventive maintenance"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 125,
+                question: "What does impact analysis involve in the software evolution process?",
+                answer: "Assessing the effects of a proposed change on a system",
+                category: "Chapter 9",
+                type: "multiple-choice",
+                options: ["Estimating the cost of software development", "Assessing the effects of a proposed change on a system", "Defining new system requirements", "Testing software performance"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 126,
+                question: "Which of the following best describes software refactoring?",
+                answer: "Improving the code structure without changing its external behavior",
+                category: "Chapter 9",
+                type: "multiple-choice",
+                options: ["Rewriting a system from scratch", "Improving the code structure without changing its external behavior", "Adding new features to the system", "Migrating the system to a new platform"],
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 127,
+                question: "What are the key activities in the software evolution process?",
+                answer: "The key activities are impact analysis, release planning, change implementation, and system release.",
+                category: "Chapter 9",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 128,
+                question: "What is a legacy system, and why is it significant in software evolution?",
+                answer: "A legacy system is an older software system developed using obsolete technologies that are still in use. It is significant because maintaining or replacing these systems can be costly and risky for organizations.",
+                category: "Chapter 9",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 129,
+                question: "What are the three types of software maintenance?",
+                answer: "The three types of maintenance are: Corrective maintenance: Fixing defects in the software. Adaptive maintenance: Modifying the software to work in a new environment. Perfective maintenance: Improving the system to enhance performance or maintainability.",
+                category: "Chapter 9",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 130,
+                question: "What is the primary goal of software reengineering?",
+                answer: "The primary goal of software reengineering is to restructure and redocument software to make it easier to understand, maintain, and modify without altering its functionality.",
+                category: "Chapter 9",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 131,
+                question: "Why is impact analysis important in the software evolution process?",
+                answer: "Impact analysis is important because it helps to assess the consequences of changes, ensuring that changes do not negatively affect the system's existing functionality or introduce new defects.",
+                category: "Chapter 9",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 132,
+                question: "How does software refactoring differ from software reengineering?",
+                answer: "Refactoring involves making small changes to the code to improve its internal structure without changing its external behavior, while software reengineering involves a more comprehensive process of restructuring the entire system to improve maintainability.",
+                category: "Chapter 9",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            },
+            {
+                id: 133,
+                question: "What is software evolution?",
+                answer: "Software evolution refers to the process of updating software after it has been delivered to correct faults, improve performance, or adapt to a changed environment.",
+                category: "Chapter 9",
+                type: "self-assessment",
+                state: "daily",
+                nextReview: new Date(),
+                correctCount: 0,
+                incorrectCount: 0,
+                streak: 0
+            }
+        ];
+
+        let currentSession = {
+            cards: [],
+            currentIndex: 0,
+            correct: 0,
+            incorrect: 0,
+            category: null
+        };
+
+        // Question Type Manager
+        class QuestionManager {
+            static generateMultipleChoiceOptions(card, allCards) {
+                const correctAnswer = card.answer;
+                const wrongAnswers = [];
+                
+                // Get wrong answers from other cards
+                const otherCards = allCards.filter(c => 
+                    c.id !== card.id && c.answer !== correctAnswer
+                );
+                
+                // Shuffle and take up to 3 wrong answers
+                const shuffled = [...otherCards].sort(() => Math.random() - 0.5);
+                for (let i = 0; i < Math.min(3, shuffled.length); i++) {
+                    if (shuffled[i].answer !== correctAnswer) {
+                        wrongAnswers.push(shuffled[i].answer);
+                    }
+                }
+                
+                // Combine and shuffle all options
+                const allOptions = [correctAnswer, ...wrongAnswers.slice(0, 3)];
+                return this.shuffleArray(allOptions);
+            }
+
+            static shuffleArray(array) {
+                const newArray = [...array];
+                for (let i = newArray.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+                }
+                return newArray;
+            }
+        }
+
+        // View Management
+        function showView(viewId) {
+            document.getElementById('dashboardView').style.display = 'none';
+            document.getElementById('studySession').style.display = 'none';
+            document.getElementById(viewId).style.display = 'block';
+        }
+
+        // Study Session Management
+        function startStudySession(category = null) {
+            currentSession = {
+                cards: category ? flashcards.filter(card => card.category === category) : [...flashcards],
+                currentIndex: 0,
+                correct: 0,
+                incorrect: 0,
+                category: category
+            };
+
+            // Shuffle cards for variety
+            currentSession.cards = QuestionManager.shuffleArray(currentSession.cards);
+
+            document.getElementById('sessionTitle').textContent = 
+                category ? `${category} Study` : 'COMP 221 Software Engineering';
+            
+            showView('studySession');
+            renderCurrentCard();
+        }
+
+        function startCategorySession(category) {
+            startStudySession(category);
+        }
+
+        function endStudySession() {
+            showView('dashboardView');
+            updateDashboardStats();
+        }
+
+        // Card Rendering based on Type
+        function renderCurrentCard() {
+            if (currentSession.currentIndex >= currentSession.cards.length) {
+                endStudySession();
+                return;
+            }
+
+            const card = currentSession.cards[currentSession.currentIndex];
+            const container = document.getElementById('questionContainer');
+            
+            let html = '';
+            
+            switch(card.type) {
+                case "self-assessment":
+                    html = renderSelfAssessment(card);
+                    break;
+                case "multiple-choice":
+                    const mcOptions = QuestionManager.generateMultipleChoiceOptions(card, flashcards);
+                    html = renderMultipleChoice(card, mcOptions);
+                    break;
+                case "manual-options":
+                    html = renderManualOptions(card);
+                    break;
+            }
+
+            container.innerHTML = html;
+            
+            // Update progress
+            const progress = ((currentSession.currentIndex + 1) / currentSession.cards.length) * 100;
+            document.getElementById('sessionProgress').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = 
+                `${currentSession.currentIndex + 1}/${currentSession.cards.length}`;
+        }
+
+        function renderSelfAssessment(card) {
+            return `
+                <div class="question-type-indicator">Self Assessment</div>
+                <div class="flashcard" onclick="flipCard()">
+                    <div class="card-front">
+                        <h3>Question</h3>
+                        <p style="font-size: 20px; margin: 15px 0;">${card.question}</p>
+                        <small>Click card to reveal answer</small>
+                    </div>
+                    <div class="card-back" style="display: none;">
+                        <h3>Answer</h3>
+                        <p style="font-size: 20px; margin: 15px 0;">${card.answer}</p>
+                        <div class="assessment-buttons">
+                            <button class="assessment-btn btn-wrong" onclick="handleSelfAssessment(false)">I got it wrong</button>
+                            <button class="assessment-btn btn-correct" onclick="handleSelfAssessment(true)">I got it right</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMultipleChoice(card, options) {
+            return `
+                <div class="question-type-indicator">Multiple Choice</div>
+                <h3 style="text-align: center; margin-bottom: 20px;">${card.question}</h3>
+                <div class="options-grid">
+                    ${options.map((option, index) => `
+                        <div class="option" onclick="handleMultipleChoice('${option.replace(/'/g, "\\'")}', '${card.answer.replace(/'/g, "\\'")}')">
+                            ${String.fromCharCode(65 + index)}. ${option}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderManualOptions(card) {
+            const options = card.options || [card.answer];
+            const shuffledOptions = QuestionManager.shuffleArray(options);
+            
+            return `
+                <div class="question-type-indicator">Multiple Choice (Fixed Options)</div>
+                <h3 style="text-align: center; margin-bottom: 20px;">${card.question}</h3>
+                <div class="options-grid">
+                    ${shuffledOptions.map((option, index) => `
+                        <div class="option" onclick="handleManualOptions('${option.replace(/'/g, "\\'")}', '${card.answer.replace(/'/g, "\\'")}')">
+                            ${String.fromCharCode(65 + index)}. ${option}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Answer Handling
+        function flipCard() {
+            const card = document.querySelector('.flashcard');
+            const front = card.querySelector('.card-front');
+            const back = card.querySelector('.card-back');
+            
+            if (front.style.display !== 'none') {
+                front.style.display = 'none';
+                back.style.display = 'block';
+                card.classList.add('flipped');
+            }
+        }
+
+        function handleSelfAssessment(isCorrect) {
+            const currentCard = currentSession.cards[currentSession.currentIndex];
+            updateCardProgress(currentCard, isCorrect);
+            showFeedback(isCorrect, isCorrect ? "Great job! 🎉" : "Keep practicing! 💪");
+            setTimeout(nextCard, 1500);
+        }
+
+        function handleMultipleChoice(selectedAnswer, correctAnswer) {
+            const currentCard = currentSession.cards[currentSession.currentIndex];
+            const isCorrect = selectedAnswer === correctAnswer;
+            
+            // Visual feedback
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                const optionText = option.textContent.substring(3); // Remove "A. ", "B. ", etc.
+                if (optionText === correctAnswer) {
+                    option.classList.add('correct');
+                }
+                if (optionText === selectedAnswer && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+                option.style.pointerEvents = 'none';
+            });
+            
+            updateCardProgress(currentCard, isCorrect);
+            
+            // Brief feedback then auto-advance
+            setTimeout(() => {
+                showFeedback(isCorrect, isCorrect ? "Correct! ✅" : `Wrong! Correct: ${correctAnswer}`);
+                setTimeout(nextCard, 1500);
+            }, 1500);
+        }
+
+        function handleManualOptions(selectedAnswer, correctAnswer) {
+            handleMultipleChoice(selectedAnswer, correctAnswer);
+        }
+
+        function showFeedback(isCorrect, message) {
+            const feedback = document.createElement('div');
+            feedback.className = `feedback-message ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`;
+            feedback.textContent = message;
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                document.body.removeChild(feedback);
+            }, 2000);
+        }
+
+        function nextCard() {
+            currentSession.currentIndex++;
+            renderCurrentCard();
+        }
+
+        function updateCardProgress(card, isCorrect) {
+            if (isCorrect) {
+                currentSession.correct++;
+                card.correctCount++;
+                card.streak++;
+            } else {
+                currentSession.incorrect++;
+                card.incorrectCount++;
+                card.streak = 0;
+            }
+        }
+
+        function updateDashboardStats() {
+            const dueCards = flashcards.filter(card => 
+                card.state === 'daily' || new Date(card.nextReview) <= new Date()
+            ).length;
+            
+            document.getElementById('dueCount').textContent = dueCards;
+            document.getElementById('sessionCardCount').textContent = 
+                `${dueCards} cards ready • ${Math.ceil(dueCards * 0.5)} minutes`;
+        }
+
+        // Initialize
+        showView('dashboardView');
+        updateDashboardStats();
+    </script>
+</body>
+</html>
